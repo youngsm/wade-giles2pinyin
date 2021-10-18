@@ -1,0 +1,47 @@
+#!/Users/youngsam/miniforge3/envs/py38/bin/python
+
+from pypinyin.style import wadegiles
+
+
+def _convert_whole_backwards(chars, table):
+    for pair in table:
+        f, r = pair
+        if r == chars:
+            return f
+
+
+def to_pinyin(wg):
+
+    if isinstance(wg, (list, tuple)):
+        return " ".join([to_pinyin(w) for w in wg])
+
+    wg = wadegiles.replace_symbol_to_no_symbol(wg).replace("v", "ü")
+
+    whole_converted = _convert_whole_backwards(wg, wadegiles._except_table)
+    if whole_converted is not None and whole_converted != wg:
+        return wadegiles._fixed_result(whole_converted)
+    whole_converted = _convert_whole_backwards(wg, wadegiles._convert_table)
+    if whole_converted is not None and whole_converted != wg:
+        return wadegiles._fixed_result(whole_converted)
+
+    initials = wadegiles.get_initials(wg, strict=False)
+    tones = wg[len(initials) :]
+
+    initials = _convert_whole_backwards(initials, wadegiles._initial_table)
+    tones = _convert_whole_backwards(tones, wadegiles._tone_table)
+
+    return wadegiles._fixed_result("{}{}".format(initials, tones))
+
+
+def main():
+    print("pin v0.1" + "\n" + "=" * 30)
+    while True:
+        ans = to_pinyin(input())
+        if "None" not in ans:
+            print(ans + "\n" + "=" * 30)
+        else:
+            print("Incorrect input")
+
+
+if __name__ == "__main__":
+    main()
