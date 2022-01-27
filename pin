@@ -36,9 +36,10 @@ def to_pinyin(wg):
 def main():
     print("pin v0.1" + "\n" + "=" * 30)
     while True:
-        ans = to_pinyin(input())
+        input_str = input()
+        ans = to_pinyin(input_str.split(" "))
         if "None" not in ans:
-            print(ans + "\n" + "=" * 30)
+            print(f"{input_str} → {ans}")
         else:
             print("Incorrect input")
 
